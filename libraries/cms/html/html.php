@@ -953,7 +953,7 @@ abstract class JHtml
 	 *
 	 * @since   1.5
 	 */
-	public static function calendar($value, $name, $id, $format = '%Y-%m-%d', $attribs = null)
+	public static function calendar($value, $name, $id, $format = '%Y-%m-%d', $attribs = null, $jsattribs = null)
 	{
 		static $done;
 
@@ -977,24 +977,64 @@ abstract class JHtml
 			// Load the calendar behavior
 			static::_('behavior.calendar');
 
+			if(strpos($format, "%") !== false)
+			{
+				$format = str_replace(
+					array('%Y','%m','%d'),
+					array('yy','mm','dd'),
+					$format
+				);
+			}
+
+			// calculate the default Date (+/-nn or date(...))
+			$defDateType = substr($value, 0, 1);
+			if($defDateType=="+" or $defDateType=="-") 
+			{
+				$defDate = $value;
+			} 
+			else
+			{
+				$time = strtotime($value);
+				$defDate = "new Date(".date('Y',$time).",".date('m',$time).",".date('d',$time).")"; //FIXME
+			}
+
 			// Only display the triggers once for each control.
 			if (!in_array($id, $done))
 			{
+				$dtPickerParams = "";
+				$stringKeyTypes = array('showOn', 'buttonImage', 'altField', 'altFormat');
+				if(is_array($jsattribs)) {
+					// transform each jsattrib if necessary (quotes, [] ...)
+					foreach($jsattribs as $key=>$val)
+					{
+						switch($key) {
+							case "numberOfMonths": $dtPickerParams .= $key . ": [" . $val . "], "; break;
+							//case "showOn": $dtPickerParams .= $key . ": '" . $val . "', "; break;
+							//case "buttonImage": $dtPickerParams .= $key . ": '" . $val . "', "; break;
+							default: 
+								if(strpos($val, " ") or in_array($key, $stringKeyTypes))
+								{
+									$dtPickerParams .= $key . ": '" . $val . "', ";
+								}
+								else
+								{
+									$dtPickerParams .= $key . ": " . $val . ", ";
+								}
+						}
+					}
+				}
 				$document = JFactory::getDocument();
-				$document
-					->addScriptDeclaration(
-					'window.addEvent(\'domready\', function() {Calendar.setup({
-				// Id of the input field
-				inputField: "' . $id . '",
-				// Format of the input field
-				ifFormat: "' . $format . '",
-				// Trigger for the calendar (button ID)
-				button: "' . $id . '_img",
-				// Alignment (defaults to "Bl")
-				align: "Tl",
-				singleClick: true,
-				firstDay: ' . JFactory::getLanguage()->getFirstDay() . '
-				});});'
+				$document->addScriptDeclaration(
+					'jQuery(function(){
+						jQuery( "#' . $id . '" ).datepicker({
+							firstDay: ' . JFactory::getLanguage()->getFirstDay() . ',
+							autoSize: true,
+							dateFormat: "'.$format.'",
+							'.$dtPickerParams.'
+							defaultDate: ' . $defDate . '
+						});
+						jQuery( "#' . $id . '" ).datepicker( "setDate" , ' . $defDate . ' )
+					});'
 				);
 				$done[] = $id;
 			}

@@ -462,19 +462,32 @@ abstract class JHtmlBehavior
 			return;
 		}
 
-		$document = JFactory::getDocument();
-		$tag = JFactory::getLanguage()->getTag();
+//		$document = JFactory::getDocument();
+//		$tag = JFactory::getLanguage()->getTag();
 
-		JHtml::_('stylesheet', 'system/calendar-jos.css', array(' title' => JText::_('JLIB_HTML_BEHAVIOR_GREEN'), ' media' => 'all'), true);
-		JHtml::_('script', $tag . '/calendar.js', false, true);
-		JHtml::_('script', $tag . '/calendar-setup.js', false, true);
+		// Include JQueryUI core framework
+		JHtml::_('jquery.framework');
 
-		$translation = static::calendartranslation();
+		JHtml::_('script', 'jui/jquery.ui.core.js', false, true);
+		JHtml::_('script', 'jui/jquery.ui.datepicker.js', false, true);
 
-		if ($translation)
-		{
-			$document->addScriptDeclaration($translation);
-		}
+		JHtml::_('script', 'jui/jquery.ui.datepicker-jalali.js', false, true);
+		JHtml::_('script', 'jui/datepicker.external.js', false, true);		
+
+		JHtml::_('stylesheet', 'jui/jquery.ui.core.css', false, true);
+		JHtml::_('stylesheet', 'jui/jquery.ui.datepicker.css', false, true);
+		JHtml::_('stylesheet', 'jui/jquery.ui.theme.css', false, true);
+
+//		JHtml::_('stylesheet', 'system/calendar-jos.css', array(' title' => JText::_('JLIB_HTML_BEHAVIOR_GREEN'), ' media' => 'all'), true);
+//		JHtml::_('script', $tag . '/calendar.js', false, true);
+//		JHtml::_('script', $tag . '/calendar-setup.js', false, true);
+
+//		$translation = static::calendartranslation();
+
+//		if ($translation)
+//		{
+//			$document->addScriptDeclaration($translation);
+//		}
 		static::$loaded[__METHOD__] = true;
 	}
 
