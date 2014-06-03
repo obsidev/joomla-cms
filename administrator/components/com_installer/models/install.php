@@ -191,6 +191,14 @@ class InstallerModelInstall extends JModelLegacy
 	}
 
 	/**
+	 *
+	 */
+	public function getPackageFromAjaxUpload()
+	{
+		return $this->_getPackageFromUpload();
+	}
+
+	/**
 	 * Works out an installation package from a HTTP upload
 	 *
 	 * @return package definition or false on failure

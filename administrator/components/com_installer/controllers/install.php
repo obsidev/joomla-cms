@@ -48,4 +48,31 @@ class InstallerControllerInstall extends JControllerLegacy
 		}
 		$this->setRedirect($redirect_url);
 	}
+
+	/**
+	 * Upload an extension package using ajax.
+	 *
+	 * @return void
+	 * @since 3.x
+	 */
+	public function ajax()
+	{
+		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+
+		$model = $this->getModel('install');
+		$package = $model->getPackageFromAjaxUpload();
+
+		if (!empty($package))
+		{
+			$r = $package;
+		}
+		else
+		{
+			$r = new stdClass();
+			$r->error = true;
+		}
+
+		echo json_encode($r);
+		exit;
+	}
 }
