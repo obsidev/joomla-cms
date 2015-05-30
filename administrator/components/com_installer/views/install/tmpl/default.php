@@ -131,57 +131,6 @@ JHtml::_('bootstrap.tooltip');
 					<input class="btn btn-primary" type="button" value="<?php echo JText::_('COM_INSTALLER_UPLOAD_AND_INSTALL'); ?>" onclick="Joomla.submitbutton()" />
 				</div>
 			</fieldset>
-			<fieldset class="uploadform">
-				<legend><?php echo JText::_('COM_INSTALLER_AJAX_UPLOAD_INSTALL_JOOMLA_EXTENSION'); ?></legend>
-				<div>
-					<p>
-						<span id="files-upload-btn" class="opload-btn">
-							<span><a href="#upload" onclick="window.oploaders['ajax_install_package'].add(this); return false;">upload file</a></span>
-							<input id="ajax_install_package" type="file" multiple>
-						</span>
-					</p>
-					<p id="drop-area" class="opload-drop-zone">
-						<span class="instructions">Drag and drop files here</span>
-						<span class="text-over">Drop files here!</span>
-					</p>
-					<div id="file-list">
-					</div>
-<?php
-JHtml::_('script', 'jui/opload.js', false, true, false, false, null);
-JHtml::_('stylesheet', 'jui/opload.css', array(), true);
-?>
-<script type="text/javascript">
-(function(){
-	var o = new opload(
-		'ajax_install_package',
-		'<?php echo JRoute::_('index.php?option=com_installer&view=install&task=install.ajax', false);?>',
-		'ajax_install_package',
-		{
-			drop:'drop-area',
-			list:'file-list',
-			filename:'install_package',
-			data:{
-				'<?php echo JSession::getFormToken();?>':'1'
-			}
-		}
-	);
-	o.callbacks.done = function(entry) {
-		if (!entry.xhr.responseText || entry.xhr.responseText.length == 0 || entry.xhr.responseText == '0')
-			return false;
-
-		var ret = o.evalJSON(entry.xhr.responseText);
-		if(ret.extractdir) {
-			var form = document.getElementById('adminForm');
-			form.install_directory.value = ret.extractdir;
-			Joomla.submitbutton3();
-			return true;
-		}
-		return false;
-	};
-})();
-</script>
-				</div>
-			</fieldset>
 		<?php echo JHtml::_('bootstrap.endTab'); ?>
 
 		<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'directory', JText::_('COM_INSTALLER_INSTALL_FROM_DIRECTORY', true)); ?>
