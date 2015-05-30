@@ -33,6 +33,10 @@ JHtml::_('behavior.framework');
 
 				$id = $displayData->form->getFormControl();
 				$showon = explode(':', $showon, 2);
+				if(strpos($showon[0], '.') !== false)
+				{
+					list($id, $showon[0]) = explode('.', $showon[0], 2);
+				}
 				$classnames .= ' showon_' . implode(' showon_', explode(',', $showon[1]));
 				$rel = ' rel="showon_' . $id . '['. $showon[0] . ']"';
 			}
